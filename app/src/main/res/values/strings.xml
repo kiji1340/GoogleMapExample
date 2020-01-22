@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GoogleMapExample</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="choose_destination">Choose destination...</string>
+    <string name="search_address_or_place">Search address or place...</string>
+    <string name="recent_history">Recent history</string>
+</resources>
