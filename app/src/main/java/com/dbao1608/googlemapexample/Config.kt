@@ -1,7 +1,6 @@
 package com.dbao1608.googlemapexample
 
 import android.content.Context
-import com.dbao1608.googlemapexample.remotedata.reponse.DirectionResponse
 
 class Config(private val context: Context) {
     companion object{

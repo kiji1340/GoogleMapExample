@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dbao1608.googlemapexample.R
+import com.dbao1608.googlemapexample.Utils
 import com.dbao1608.googlemapexample.model.Place
 import com.dbao1608.googlemapexample.view.adapter.OnItemViewClickListener
 import com.dbao1608.googlemapexample.view.adapter.PlaceAdapter
@@ -71,6 +72,7 @@ class SearchView : ConstraintLayout, OnItemViewClickListener<Place> {
             setOnKeyListener(object : OnKeyListener {
                 override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
                     if (event?.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                        Utils.hideKeyboardFrom(context, this@SearchView)
                         placeViewModel?.isAttached()?.let {
                             val result = searchEdit.text?.trim().toString()
                             placeViewModel

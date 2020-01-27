@@ -4,4 +4,7 @@
     <string name="choose_destination">Choose destination...</string>
     <string name="search_address_or_place">Search address or place...</string>
     <string name="recent_history">Recent history</string>
+    <string name="question_request_gps">GPS is disabled in your device. Would you like to enable it?</string>
+    <string name="btn_ok">Ok</string>
+    <string name="btn_cancel">Cancel</string>
 </resources>

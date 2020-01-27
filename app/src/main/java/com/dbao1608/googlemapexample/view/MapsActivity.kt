@@ -13,6 +13,8 @@ import com.dbao1608.googlemapexample.Config
 import com.dbao1608.googlemapexample.R
 import com.dbao1608.googlemapexample.model.Direction
 import com.dbao1608.googlemapexample.model.Place
+import com.dbao1608.googlemapexample.view.controller.MapController
+import com.dbao1608.googlemapexample.view.controller.abstraction.Map
 import com.dbao1608.googlemapexample.view.custom.MapBottomListener
 import com.dbao1608.googlemapexample.view.custom.SearchViewListener
 import com.dbao1608.googlemapexample.viewmodel.DirectionViewModel
@@ -27,19 +29,24 @@ import kotlinx.android.synthetic.main.view_map_bottom_controller.view.*
 
 class MapsActivity : AppCompatActivity()
     , OnMapReadyCallback
+    , Map.Callback
     , MapBottomListener.TextView
     , MapBottomListener.ModeMoving
     , SearchViewListener.BackButton {
 
     private lateinit var mMap: GoogleMap
     private var directionViewModel: DirectionViewModel? = null
+    private lateinit var mapController: MapController
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         Config.initialize(this.applicationContext)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+        mapController = MapController(this, this)
+
+
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -57,61 +64,28 @@ class MapsActivity : AppCompatActivity()
         searchView.attachOnActivity(this)
     }
 
-    private fun drawRoute(direction: Direction) {
-        mMap.clear()
+    override fun onDestroy() {
+        super.onDestroy()
+        mapController.dismiss()
+    }
 
-        val markerOptionsStart = MarkerOptions()
-        markerOptionsStart.position(
-            LatLng(
-                direction.startAddress!!.lat
-                , direction.startAddress!!.lng))
-        markerOptionsStart.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_pin_blue))
-        mMap.addMarker(markerOptionsStart)
+    override fun onResume() {
+        super.onResume()
+        mapController.getCurrentLocation()
+    }
 
-        mMap.moveCamera(
-            CameraUpdateFactory.newLatLng(
-                LatLng(
-                    direction.startAddress!!.lat
-                    , direction.startAddress!!.lng
-                )
-            )
-        )
-
-        val markerOptionsEnd = MarkerOptions()
-        markerOptionsEnd.position(
-            LatLng(
-                direction.endAddress!!.lat
-                , direction.endAddress!!.lng))
-        markerOptionsEnd.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_pin_red))
-        mMap.addMarker(markerOptionsEnd)
-
-        var points: ArrayList<LatLng?>
-        var lineOptions: PolylineOptions? = null
-
-        for (path in direction.routes) {
-            points = ArrayList()
-            lineOptions = PolylineOptions()
-
-            for (j in path.indices) {
-                val point = path[j]
-                val lat = point["lat"]!!.toDouble()
-                val lng = point["lng"]!!.toDouble()
-                val position = LatLng(lat, lng)
-                points.add(position)
-            }
-            // Adding all the points in the route to LineOptions
-            lineOptions.addAll(points)
-            lineOptions.width(10f)
-            lineOptions.color(Color.RED)
-        }
-
-        if (lineOptions != null) {
-            mMap.addPolyline(lineOptions)
-        }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        mapController.getRequestCurrentLocationResult(requestCode, permissions, grantResults)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mapController.requestCurrentLocation(mMap)
     }
 
     override fun onTextViewEvent(isOrigin: Boolean) {
@@ -149,7 +123,7 @@ class MapsActivity : AppCompatActivity()
             directionViewModel?.getDirections(isOrigin, it.id!!)?.observe(this, object: Observer<Direction>{
                 override fun onChanged(t: Direction?) {
                     if(t == null) return
-                    drawRoute(t)
+                    mapController.drawRoute(t)
                 }
 
             })
@@ -179,9 +153,11 @@ class MapsActivity : AppCompatActivity()
         directionViewModel?.getDirections(mode)?.observe(this, object: Observer<Direction>{
             override fun onChanged(t: Direction?) {
                 if(t == null) return
-                drawRoute(t)
+                mapController.drawRoute(t)
             }
 
         })
     }
+
+
 }
