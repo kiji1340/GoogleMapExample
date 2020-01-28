@@ -72,5 +72,4 @@ class PlaceViewModel : BaseViewModel() {
         return liveData
     }
 
-    class SimpleThread
 }
