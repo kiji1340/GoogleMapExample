@@ -11,9 +11,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dbao1608.domain.entity.Place
 import com.dbao1608.googlemapexample.R
 import com.dbao1608.googlemapexample.Utils
-import com.dbao1608.googlemapexample.model.Place
 import com.dbao1608.googlemapexample.view.adapter.OnItemViewClickListener
 import com.dbao1608.googlemapexample.view.adapter.PlaceAdapter
 import com.dbao1608.googlemapexample.viewmodel.PlaceViewModel

@@ -1,6 +1,6 @@
 package com.dbao1608.googlemapexample.view.controller.abstraction
 
-import com.dbao1608.googlemapexample.model.Direction
+import com.dbao1608.domain.entity.Direction
 import com.google.android.gms.maps.GoogleMap
 
 interface Map {

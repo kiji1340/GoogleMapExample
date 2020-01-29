@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':remotedata', ':localdata', ':domain'
 rootProject.name='GoogleMapExample'

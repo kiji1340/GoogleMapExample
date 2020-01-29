@@ -3,26 +3,24 @@ package com.dbao1608.googlemapexample.view
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.dbao1608.googlemapexample.Config
+import androidx.lifecycle.ViewModelProvider
+import com.dbao1608.domain.DomainConfig
+import com.dbao1608.domain.entity.Direction
+import com.dbao1608.domain.entity.Place
 import com.dbao1608.googlemapexample.R
-import com.dbao1608.googlemapexample.model.Direction
-import com.dbao1608.googlemapexample.model.Place
 import com.dbao1608.googlemapexample.view.controller.MapController
 import com.dbao1608.googlemapexample.view.controller.abstraction.Map
 import com.dbao1608.googlemapexample.view.custom.MapBottomListener
 import com.dbao1608.googlemapexample.view.custom.SearchViewListener
 import com.dbao1608.googlemapexample.viewmodel.DirectionViewModel
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.android.synthetic.main.view_map_bottom_controller.view.*
 
@@ -42,16 +40,14 @@ class MapsActivity : AppCompatActivity()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        Config.initialize(this.applicationContext)
-
+        DomainConfig.setKeyApi(getString(R.string.google_maps_key))
         mapController = MapController(this, this)
 
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
-        directionViewModel = ViewModelProviders.of(this)[DirectionViewModel::class.java]
+        directionViewModel = ViewModelProvider(this)[DirectionViewModel::class.java]
         directionViewModel!!.apply {
             attach(this@MapsActivity)
             addContext(this@MapsActivity)
@@ -114,19 +110,14 @@ class MapsActivity : AppCompatActivity()
 
     override fun onBackPressedEvent(isOrigin: Boolean, data: Place?) {
         data?.let {
-            if(isOrigin)
+            if (isOrigin)
                 bottomController.startTxt.text = it.address
             else
                 bottomController.endTxt.text = it.address
 
-
-            directionViewModel?.getDirections(isOrigin, it.id!!)?.observe(this, object: Observer<Direction>{
-                override fun onChanged(t: Direction?) {
-                    if(t == null) return
-                    mapController.drawRoute(t)
-                }
-
-            })
+            directionViewModel?.getDirections(isOrigin, it.id!!)
+                ?.observe(this
+                    , Observer<Direction> { direction: Direction? ->drawDirection(direction) })
         }
 
 
@@ -150,13 +141,15 @@ class MapsActivity : AppCompatActivity()
     }
 
     override fun onModeEvent(mode: String) {
-        directionViewModel?.getDirections(mode)?.observe(this, object: Observer<Direction>{
-            override fun onChanged(t: Direction?) {
-                if(t == null) return
-                mapController.drawRoute(t)
-            }
+        directionViewModel?.getDirections(mode)?.observe(this,
+            Observer<Direction> { direction: Direction? -> drawDirection(direction) })
+    }
 
-        })
+    private fun drawDirection(direction: Direction?){
+        if (direction == null){
+            return
+        }
+        mapController.drawRoute(direction)
     }
 
 
