@@ -8,17 +8,18 @@ import com.dbao1608.remotedata.reponse.DirectionResponse
 
 class DirectionMapper : Mapper<DirectionResponse, Direction> {
     override fun transformer(type: DirectionResponse): Direction {
-        val direction =  Direction()
+        val direction = Direction()
+
         val startAddress = Address().apply {
             id = type.geocoded_waypoints[0].place_id
         }
         val endAddress = Address().apply {
             id = type.geocoded_waypoints[1].place_id
         }
-        for(route in type.routes){
 
+        for (route in type.routes) {
             val path = ArrayList<HashMap<String, String>>()
-            for(leg in route.legs){
+            for (leg in route.legs) {
                 startAddress.apply {
                     name = leg.start_address
                     lng = leg.start_location.lng
@@ -32,10 +33,10 @@ class DirectionMapper : Mapper<DirectionResponse, Direction> {
                 }
                 direction.startAddress = startAddress
                 direction.endAddress = endAddress
-                for(step in leg.steps){
+                for (step in leg.steps) {
                     val listPoly = decodePoly(step.polyline.points)
                     listPoly?.let {
-                        for(latLng in it){
+                        for (latLng in it) {
                             val hm: HashMap<String, String> = HashMap()
                             hm["lat"] = latLng.latitude.toString()
                             hm["lng"] = latLng.longitude.toString()
@@ -49,7 +50,6 @@ class DirectionMapper : Mapper<DirectionResponse, Direction> {
 
         return direction
     }
-
 
 
     private fun decodePoly(encoded: String): List<LatLng>? {

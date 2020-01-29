@@ -10,7 +10,7 @@ import retrofit2.Response
 
 class DirectionRemoteRepository: DirectionRepository {
 
-    private lateinit var directionApi: DirectionApi
+    private val directionApi= ApiClient.createService(DirectionApi::class.java)
 
     override fun getDirection(
         origin: String,
@@ -18,9 +18,6 @@ class DirectionRemoteRepository: DirectionRepository {
         mode: String
     ): Call<DirectionResponse> = directionApi.getDirections(origin, destination, mode)
 
-    override fun build() {
-        directionApi = ApiClient.createService(DirectionApi::class.java)
-    }
 
 
 

@@ -10,7 +10,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DirectionUseCase : IDirectionUseCase{
+class DirectionUseCase : IDirectionUseCase {
     private val directionRepository = DirectionRemoteRepository()
 
 
@@ -31,7 +31,14 @@ class DirectionUseCase : IDirectionUseCase{
                     response: Response<DirectionResponse>
                 ) {
                     if (response.isSuccessful && response.body() != null) {
-                        liveData.postValue(DirectionMapper().transformer(response.body()!!))
+                        if (response.body()!!.routes.isNullOrEmpty())
+                            liveData.postValue(null)
+                        else
+                            liveData
+                                .postValue(
+                                    DirectionMapper().transformer(response.body()!!)
+                                )
+
                     } else {
                         liveData.postValue(null)
                     }

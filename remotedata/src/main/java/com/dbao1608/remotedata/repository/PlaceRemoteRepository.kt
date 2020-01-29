@@ -8,15 +8,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PlaceRemoteRepository :
-    PlaceRepository {
+class PlaceRemoteRepository : PlaceRepository {
 
-    private lateinit var placeApi: PlaceApi
+    private val placeApi= ApiClient.createService(PlaceApi::class.java)
 
-    override fun build() {
-        placeApi = ApiClient.createService(PlaceApi::class.java)
 
-    }
 
     override fun getSearchPlace(inputText: String): Call<PlaceResponse> {
         return placeApi.searchPlace(inputText)

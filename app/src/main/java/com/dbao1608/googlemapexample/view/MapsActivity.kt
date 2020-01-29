@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -115,10 +116,8 @@ class MapsActivity : AppCompatActivity()
                 bottomController.endTxt.text = it.address
 
             directionViewModel?.getDirections(isOrigin, it.id!!)
-                ?.observe(this, Observer<Direction> { direction: Direction? ->
-                    if (direction == null) return@Observer
-                    mapController.drawRoute(direction)
-                })
+                ?.observe(this
+                    , Observer<Direction> { direction: Direction? ->drawDirection(direction) })
         }
 
 
@@ -142,13 +141,15 @@ class MapsActivity : AppCompatActivity()
     }
 
     override fun onModeEvent(mode: String) {
-        directionViewModel?.getDirections(mode)?.observe(this, object : Observer<Direction> {
-            override fun onChanged(t: Direction?) {
-                if (t == null) return
-                mapController.drawRoute(t)
-            }
+        directionViewModel?.getDirections(mode)?.observe(this,
+            Observer<Direction> { direction: Direction? -> drawDirection(direction) })
+    }
 
-        })
+    private fun drawDirection(direction: Direction?){
+        if (direction == null){
+            return
+        }
+        mapController.drawRoute(direction)
     }
 
 

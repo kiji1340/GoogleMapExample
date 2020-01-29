@@ -24,6 +24,7 @@ class PlaceUseCase(context: Context): IPlaceUseCase {
     private val placeMapper = PlaceMapper.getInstance()
 
 
+
     override fun searchPlace(inputText: String): MutableLiveData<List<Place>>{
         val liveData = MutableLiveData<List<Place>>()
 
