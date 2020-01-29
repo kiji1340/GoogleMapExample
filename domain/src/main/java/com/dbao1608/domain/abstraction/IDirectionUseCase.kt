@@ -7,6 +7,6 @@ interface IDirectionUseCase {
     fun getDirections(
         origin: String
         , destination: String
-        , mode: String
+        , mode: String = "driving"
     ): MutableLiveData<Direction>
 }

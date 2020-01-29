@@ -36,6 +36,8 @@ class PlaceUseCase(context: Context): IPlaceUseCase {
                 if(response.isSuccessful && response.body() != null){
                     val place = placeMapper.transformer(response.body()!!)
                     liveData.postValue(place)
+                }else{
+                    liveData.postValue(null)
                 }
 
             }

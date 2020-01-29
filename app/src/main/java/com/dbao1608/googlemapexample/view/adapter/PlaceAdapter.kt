@@ -3,9 +3,8 @@ package com.dbao1608.googlemapexample.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.dbao1608.domain.entity.Place
 import com.dbao1608.googlemapexample.R
-import com.dbao1608.googlemapexample.localdata.PlaceEntity
-import com.dbao1608.googlemapexample.model.Place
 import com.dbao1608.googlemapexample.view.adapter.holder.PlaceHolder
 
 class PlaceAdapter : RecyclerView.Adapter<PlaceHolder>() {

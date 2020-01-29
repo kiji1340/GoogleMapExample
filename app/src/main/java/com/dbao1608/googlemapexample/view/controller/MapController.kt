@@ -10,9 +10,9 @@ import android.provider.Settings
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.dbao1608.domain.entity.Direction
 import com.dbao1608.googlemapexample.Key
 import com.dbao1608.googlemapexample.R
-import com.dbao1608.googlemapexample.model.Direction
 import com.dbao1608.googlemapexample.view.controller.abstraction.Map
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
